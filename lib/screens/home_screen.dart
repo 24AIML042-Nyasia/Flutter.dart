@@ -3,9 +3,14 @@ import '../models/student.dart';
 import '../theme.dart';
 import '../widgets/dashboard_card.dart';
 import '../widgets/profile_card.dart';
+import 'assignment_list_screen.dart';
+import 'attendance_screen.dart';
+import 'event_gallery_screen.dart';
+import 'faculty_screen.dart';
 import 'notifications_screen.dart';
 import 'profile_screen.dart';
 import 'settings_screen.dart';
+import 'timetable_screen.dart';
 
 /// StatelessWidget: the dashboard just lays out data it's given —
 /// no internal mutable state of its own.
@@ -25,15 +30,15 @@ class HomeScreen extends StatelessWidget {
       attendancePercentage: 91,
       subjects: ['MAD', 'DBMS', 'AI', 'CN'],
       notifications: const [
-        'Assignment submission due Friday',
-        'Event registration open for Tech Fest',
-        'Examination schedule released',
+        'Internal exam schedule released',
+        'Assignment deadline approaching',
+        'Technical event registration open',
       ],
     );
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Smart Student Companion'),
+        title: const Text('Course Dashboard'),
         actions: [
           _NotificationBellButton(notifications: student.notifications),
           const SizedBox(width: 8),
@@ -53,58 +58,88 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             const Text(
-              'Dashboard',
+              'Modules',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 12),
-            GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisSpacing: 14,
-              mainAxisSpacing: 14,
-              childAspectRatio: 1.15,
-              children: [
-                DashboardCard(
-                  title: 'Attendance',
-                  subtitle: student.attendanceStatus(),
-                  icon: Icons.event_available_rounded,
-                  color: AppColors.mintGreen,
-                ),
-                DashboardCard(
-                  title: 'Timetable',
-                  subtitle: student.subjectList(),
-                  icon: Icons.calendar_month_rounded,
-                  color: AppColors.babyBlue,
-                ),
-                DashboardCard(
-                  title: 'Assignments',
-                  subtitle: '2 pending',
-                  icon: Icons.assignment_rounded,
-                  color: AppColors.blushPink,
-                ),
-                DashboardCard(
-                  title: 'Notes',
-                  subtitle: '5 subjects',
-                  icon: Icons.sticky_note_2_rounded,
-                  color: AppColors.softYellow,
-                ),
-                DashboardCard(
-                  title: 'Events',
-                  subtitle: 'Tech fest — 2 days left',
-                  icon: Icons.celebration_rounded,
-                  color: AppColors.peach,
-                ),
-                DashboardCard(
-                  title: 'Settings',
-                  subtitle: 'Preferences',
-                  icon: Icons.settings_rounded,
-                  color: AppColors.mintGreen,
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const SettingsScreen()),
+            // LayoutBuilder makes the dashboard grid responsive: more
+            // columns appear automatically on wider screens (tablets).
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final width = constraints.maxWidth;
+                final crossAxisCount = width < 500
+                    ? 2
+                    : width < 900
+                        ? 3
+                        : 4;
+
+                final cards = [
+                  DashboardCard(
+                    title: 'Attendance',
+                    subtitle: student.attendanceStatus(),
+                    icon: Icons.event_available_rounded,
+                    color: AppColors.mintGreen,
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const AttendanceScreen()),
+                    ),
                   ),
-                ),
-              ],
+                  DashboardCard(
+                    title: 'Timetable',
+                    subtitle: student.subjectList(),
+                    icon: Icons.calendar_month_rounded,
+                    color: AppColors.babyBlue,
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const TimetableScreen()),
+                    ),
+                  ),
+                  DashboardCard(
+                    title: 'Assignments',
+                    subtitle: '3 to track',
+                    icon: Icons.assignment_rounded,
+                    color: AppColors.blushPink,
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const AssignmentListScreen()),
+                    ),
+                  ),
+                  DashboardCard(
+                    title: 'Faculty',
+                    subtitle: 'Meet your teachers',
+                    icon: Icons.school_rounded,
+                    color: AppColors.lavender,
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const FacultyScreen()),
+                    ),
+                  ),
+                  DashboardCard(
+                    title: 'Event Gallery',
+                    subtitle: '6 upcoming events',
+                    icon: Icons.celebration_rounded,
+                    color: AppColors.peach,
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const EventGalleryScreen()),
+                    ),
+                  ),
+                  DashboardCard(
+                    title: 'Settings',
+                    subtitle: 'Preferences',
+                    icon: Icons.settings_rounded,
+                    color: AppColors.softYellow,
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                    ),
+                  ),
+                ];
+
+                return GridView.count(
+                  crossAxisCount: crossAxisCount,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisSpacing: 14,
+                  mainAxisSpacing: 14,
+                  childAspectRatio: 1.15,
+                  children: cards,
+                );
+              },
             ),
           ],
         ),

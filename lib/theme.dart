@@ -26,11 +26,6 @@ class AppColors {
 /// Global switch that controls light/dark mode for the whole app.
 /// Read by [SmartStudentCompanionApp] and written to by the Settings screen.
 final ValueNotifier<ThemeMode> themeModeNotifier = ValueNotifier(ThemeMode.light);
-/// Global notifiers for simple app-wide settings. Using ValueNotifiers keeps
-/// the UI state persistent across rebuilds of the widget tree (for example
-/// when the app's theme wraps MaterialApp and rebuilds the tree).
-final ValueNotifier<bool> pushNotificationsNotifier = ValueNotifier<bool>(true);
-final ValueNotifier<bool> emailUpdatesNotifier = ValueNotifier<bool>(false);
 
 ThemeData buildAppTheme() {
   final base = ThemeData.light(useMaterial3: true);

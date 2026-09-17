@@ -11,8 +11,8 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  // Local state removed; use global notifiers from theme.dart so values
-  // persist even if the widget tree rebuilds.
+  bool _pushNotifications = true;
+  bool _emailUpdates = false;
 
   @override
   Widget build(BuildContext context) {
@@ -26,32 +26,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              // Push notifications — driven by a ValueNotifier so it survives
-              // rebuilds of the app widget tree.
-              ValueListenableBuilder<bool>(
-                valueListenable: pushNotificationsNotifier,
-                builder: (context, value, _) {
-                  return _settingSwitch(
-                    context: context,
-                    title: 'Push notifications',
-                    subtitle: 'Assignments, events and attendance alerts',
-                    value: value,
-                    onChanged: (v) => pushNotificationsNotifier.value = v,
-                  );
-                },
+              _settingSwitch(
+                context: context,
+                title: 'Push notifications',
+                subtitle: 'Assignments, events and attendance alerts',
+                value: _pushNotifications,
+                onChanged: (v) => setState(() => _pushNotifications = v),
               ),
-              // Email updates — also kept in a ValueNotifier.
-              ValueListenableBuilder<bool>(
-                valueListenable: emailUpdatesNotifier,
-                builder: (context, value, _) {
-                  return _settingSwitch(
-                    context: context,
-                    title: 'Email updates',
-                    subtitle: 'Weekly summary sent to your inbox',
-                    value: value,
-                    onChanged: (v) => emailUpdatesNotifier.value = v,
-                  );
-                },
+              _settingSwitch(
+                context: context,
+                title: 'Email updates',
+                subtitle: 'Weekly summary sent to your inbox',
+                value: _emailUpdates,
+                onChanged: (v) => setState(() => _emailUpdates = v),
               ),
               _settingSwitch(
                 context: context,
