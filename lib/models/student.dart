@@ -26,6 +26,7 @@ class Student extends Person {
   double cgpa;
   double attendancePercentage;
   final List<String> subjects;
+  final List<String> notifications;
 
   // Constructor calling the superclass constructor
   Student({
@@ -37,6 +38,7 @@ class Student extends Person {
     required this.cgpa,
     required this.attendancePercentage,
     required this.subjects,
+    this.notifications = const [],
   }) : super(name, email);
 
   // Overriding a method from the parent class (polymorphism)
@@ -67,36 +69,3 @@ class Student extends Person {
   }
 }
 
-/// A small helper class showing a plain function + basic Dart data types.
-/// Used by the "Dart Concepts" screen to show variables/operators in action.
-class DartConceptsDemo {
-  // Constants & variables of different data types
-  static const String appName = 'Smart Student Companion';
-  static const int foundingYear = 2026;
-  static const double passingCgpa = 5.0;
-  static const bool isBeta = true;
-
-  // A function demonstrating parameters, operators and a loop
-  static int sumOfFirstN(int n) {
-    var total = 0; // variable
-    for (var i = 1; i <= n; i++) {
-      total += i; // operator
-    }
-    return total;
-  }
-
-  // A function demonstrating conditional statements
-  static String gradeFromCgpa(double cgpa) {
-    if (cgpa >= 9.0) {
-      return 'A+';
-    } else if (cgpa >= 8.0) {
-      return 'A';
-    } else if (cgpa >= 7.0) {
-      return 'B';
-    } else if (cgpa >= 6.0) {
-      return 'C';
-    } else {
-      return 'Needs Improvement';
-    }
-  }
-}

@@ -14,7 +14,23 @@ class AppColors {
 
   static const Color primary = Color(0xFFB6A6E8); // pastel purple
   static const Color background = Color(0xFFFAF9FC);
+
+  // Dark mode surfaces
+  static const Color darkBackground = Color(0xFF1E1A2B);
+  static const Color darkSurface = Color(0xFF2A2440);
+  static const Color darkAppBar = Color(0xFF352C4E);
+  static const Color darkText = Color(0xFFF2F0F8);
+  static const Color darkTextMuted = Color(0xFFC7C0DE);
 }
+
+/// Global switch that controls light/dark mode for the whole app.
+/// Read by [SmartStudentCompanionApp] and written to by the Settings screen.
+final ValueNotifier<ThemeMode> themeModeNotifier = ValueNotifier(ThemeMode.light);
+/// Global notifiers for simple app-wide settings. Using ValueNotifiers keeps
+/// the UI state persistent across rebuilds of the widget tree (for example
+/// when the app's theme wraps MaterialApp and rebuilds the tree).
+final ValueNotifier<bool> pushNotificationsNotifier = ValueNotifier<bool>(true);
+final ValueNotifier<bool> emailUpdatesNotifier = ValueNotifier<bool>(false);
 
 ThemeData buildAppTheme() {
   final base = ThemeData.light(useMaterial3: true);
@@ -38,6 +54,34 @@ ThemeData buildAppTheme() {
     ),
     cardTheme: CardThemeData(
       color: Colors.white,
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    ),
+  );
+}
+
+ThemeData buildAppDarkTheme() {
+  final base = ThemeData.dark(useMaterial3: true);
+  return base.copyWith(
+    scaffoldBackgroundColor: AppColors.darkBackground,
+    colorScheme: base.colorScheme.copyWith(
+      primary: AppColors.primary,
+      secondary: AppColors.mintGreen,
+      surface: AppColors.darkSurface,
+    ),
+    appBarTheme: const AppBarTheme(
+      backgroundColor: AppColors.darkAppBar,
+      foregroundColor: AppColors.darkText,
+      elevation: 0,
+      centerTitle: true,
+    ),
+    textTheme: base.textTheme.apply(
+      bodyColor: AppColors.darkText,
+      displayColor: AppColors.darkText,
+      fontFamily: 'Roboto',
+    ),
+    cardTheme: CardThemeData(
+      color: AppColors.darkSurface,
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
