@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import '../routes/app_routes.dart';
+import '../services/prefs_service.dart';
 import '../theme.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text_field.dart';
-import 'home_screen.dart';
-import 'registration_screen.dart';
 
 /// StatefulWidget: holds text controllers, a form key, and an
 /// obscure-password toggle — all mutable UI state.
@@ -27,12 +27,21 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _handleLogin() {
-    if (_formKey.currentState!.validate()) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
+  Future<void> _handleLogin() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final username = _idController.text;
+    if (!PrefsService.checkCredentials(username, _passwordController.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Invalid username or password')),
       );
+      return;
     }
+
+    // Save the session so the next launch goes straight to the Dashboard.
+    await PrefsService.login(username);
+    if (!mounted) return;
+    Navigator.of(context).pushReplacementNamed(AppRoutes.home);
   }
 
   @override
@@ -99,6 +108,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 12),
                 CustomButton(label: 'Login', onPressed: _handleLogin),
+                const SizedBox(height: 12),
+                const Text(
+                  'Demo login: ${PrefsService.demoUsername} / ${PrefsService.demoPassword}',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 11, color: AppColors.textMuted),
+                ),
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -108,11 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(fontSize: 13, color: AppColors.textMuted),
                     ),
                     GestureDetector(
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const RegistrationScreen(),
-                        ),
-                      ),
+                      onTap: () => Navigator.of(context).pushNamed(AppRoutes.register),
                       child: const Text(
                         'Register',
                         style: TextStyle(

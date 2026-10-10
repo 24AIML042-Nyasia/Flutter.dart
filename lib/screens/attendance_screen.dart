@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../state/app_language.dart';
 import '../theme.dart';
 
 /// Simple record type for one subject's attendance.
@@ -12,7 +13,10 @@ class SubjectAttendance {
 /// Demonstrates: Stack (overlaying text on a progress ring), ListView,
 /// Row + Expanded (label / bar / percentage laid out together).
 class AttendanceScreen extends StatelessWidget {
-  const AttendanceScreen({super.key});
+  /// [embedded] = true when shown as a tab inside HomeScreen.
+  final bool embedded;
+
+  const AttendanceScreen({super.key, this.embedded = false});
 
   static const List<SubjectAttendance> _records = [
     SubjectAttendance('DBMS', 92),
@@ -28,9 +32,7 @@ class AttendanceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Attendance Summary')),
-      body: ListView(
+    final body = ListView(
         padding: const EdgeInsets.all(20),
         children: [
           Center(child: _OverallRing(percentage: _overall)),
@@ -42,7 +44,11 @@ class AttendanceScreen extends StatelessWidget {
           const SizedBox(height: 12),
           for (final record in _records) _SubjectRow(record: record),
         ],
-      ),
+      );
+    if (embedded) return body;
+    return Scaffold(
+      appBar: AppBar(title: Text(tr(context, 'attendance'))),
+      body: body,
     );
   }
 }

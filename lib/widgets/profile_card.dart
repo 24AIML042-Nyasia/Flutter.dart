@@ -75,11 +75,18 @@ class ProfileCard extends StatelessWidget {
               const SizedBox(height: 16),
               const Divider(color: Colors.white),
               const SizedBox(height: 8),
-              _detailRow(context, tr(context, 'email'), student.email, primaryText, mutedText),
-              _detailRow(context, tr(context, 'semester'), student.semester.toString(), primaryText, mutedText),
-              _detailRow(context, tr(context, 'attendance'),
-                  '${student.attendancePercentage.toStringAsFixed(0)}% (${student.attendanceStatus()})', primaryText, mutedText),
-              _detailRow(context, tr(context, 'subjects'), student.subjectList(), primaryText, mutedText),
+              _detailRow(context, tr(context, 'email'), student.email,
+                  primaryText, mutedText),
+              _detailRow(context, tr(context, 'semester'),
+                  student.semester.toString(), primaryText, mutedText),
+              _detailRow(
+                  context,
+                  tr(context, 'attendance'),
+                  '${student.attendancePercentage.toStringAsFixed(0)}% (${student.attendanceStatus()})',
+                  primaryText,
+                  mutedText),
+              _detailRow(context, tr(context, 'subjects'),
+                  student.subjectList(), primaryText, mutedText),
             ],
           ],
         ),
@@ -87,7 +94,8 @@ class ProfileCard extends StatelessWidget {
     );
   }
 
-  Widget _detailRow(BuildContext context, String label, String value, Color primaryText, Color mutedText) {
+  Widget _detailRow(BuildContext context, String label, String value,
+      Color primaryText, Color mutedText) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(

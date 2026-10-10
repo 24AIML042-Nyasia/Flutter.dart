@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/student.dart';
+import '../services/prefs_service.dart';
 import '../state/app_language.dart';
 import '../state/app_state.dart';
 import '../theme.dart';
@@ -14,6 +15,7 @@ import '../widgets/custom_text_field.dart';
 ///
 /// APPLICATION STATE (shared with other screens through ValueNotifiers):
 /// the saved profile, dark mode, language, and dashboard customization.
+/// Shared Preferences saves them so they survive an app restart.
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -46,7 +48,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   };
 
   static const List<String> _romanNumerals = [
-    'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII',
+    'I',
+    'II',
+    'III',
+    'IV',
+    'V',
+    'VI',
+    'VII',
+    'VIII',
   ];
 
   @override
@@ -57,6 +66,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _enrollmentController = TextEditingController(text: student.enrollmentNo);
     _departmentController = TextEditingController(text: student.department);
     _selectedSemester = student.semester;
+
+    // Restore the checkbox choices saved in Shared Preferences.
+    _notificationPrefs.updateAll(
+        (key, value) => PrefsService.getBool('notif_$key', value));
+    _coursePrefs.updateAll(
+        (key, value) => PrefsService.getBool('course_$key', value));
   }
 
   @override
@@ -85,6 +100,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       subjects: current.subjects,
       notifications: current.notifications,
     );
+
+    PrefsService.saveProfile(currentStudentNotifier.value);
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(tr(context, 'profileUpdated'))),
@@ -144,12 +161,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: tr(context, 'notificationPrefs'),
             color: AppColors.softYellow,
             children: [
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                dense: true,
+                activeColor: AppColors.primary,
+                title: Text(
+                  tr(context, 'enableNotifications'),
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+                value: notificationsEnabledNotifier.value,
+                onChanged: (v) {
+                  notificationsEnabledNotifier.value = v;
+                  setState(() {});
+                },
+              ),
               for (final key in _notificationPrefs.keys)
                 _checkboxRow(
                   label: tr(context, key),
                   value: _notificationPrefs[key]!,
-                  onChanged: (v) =>
-                      setState(() => _notificationPrefs[key] = v ?? false),
+                  // Greyed out while notifications are disabled.
+                  onChanged: notificationsEnabledNotifier.value
+                      ? (v) {
+                          setState(() => _notificationPrefs[key] = v ?? false);
+                          PrefsService.setBool('notif_$key', v ?? false);
+                        }
+                      : null,
                 ),
             ],
           ),
@@ -161,16 +197,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _checkboxRow(
                   label: tr(context, key),
                   value: _coursePrefs[key]!,
-                  onChanged: (v) =>
-                      setState(() => _coursePrefs[key] = v ?? false),
+                  onChanged: (v) {
+                    setState(() => _coursePrefs[key] = v ?? false);
+                    PrefsService.setBool('course_$key', v ?? false);
+                  },
                 ),
               Padding(
                 padding: const EdgeInsets.only(top: 4),
                 child: Text(
                   tr(context, 'selectedCount')
-                      .replaceAll('{a}', '${_coursePrefs.values.where((v) => v).length}')
+                      .replaceAll('{a}',
+                          '${_coursePrefs.values.where((v) => v).length}')
                       .replaceAll('{b}', '${_coursePrefs.length}'),
-                  style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
+                  style:
+                      const TextStyle(fontSize: 12, color: AppColors.textMuted),
                 ),
               ),
             ],
@@ -178,7 +218,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _section(
             title: tr(context, 'dashboardCustomization'),
             color: AppColors.blushPink,
-            children: [_dashboardSlider(), const SizedBox(height: 8), _moduleSwitches()],
+            children: [
+              _dashboardSlider(),
+              const SizedBox(height: 8),
+              _moduleSwitches()
+            ],
           ),
         ],
       ),
@@ -310,7 +354,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _checkboxRow({
     required String label,
     required bool value,
-    required ValueChanged<bool?> onChanged,
+    required ValueChanged<bool?>? onChanged,
   }) {
     return CheckboxListTile(
       contentPadding: EdgeInsets.zero,

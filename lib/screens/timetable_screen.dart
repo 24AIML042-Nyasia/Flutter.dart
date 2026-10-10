@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../state/app_language.dart';
 import '../theme.dart';
 
 class _Slot {
@@ -17,7 +18,10 @@ class _DaySchedule {
 /// Demonstrates: ListView (scrollable list of day cards), Column (slots
 /// stacked inside each day), Row (time + subject side by side).
 class TimetableScreen extends StatelessWidget {
-  const TimetableScreen({super.key});
+  /// [embedded] = true when shown as a tab inside HomeScreen.
+  final bool embedded;
+
+  const TimetableScreen({super.key, this.embedded = false});
 
   static const List<_DaySchedule> _week = [
     _DaySchedule('Monday', [
@@ -46,12 +50,14 @@ class TimetableScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Timetable')),
-      body: ListView(
+    final body = ListView(
         padding: const EdgeInsets.all(16),
         children: [for (final day in _week) _DayCard(day: day)],
-      ),
+      );
+    if (embedded) return body;
+    return Scaffold(
+      appBar: AppBar(title: Text(tr(context, 'timetable'))),
+      body: body,
     );
   }
 }

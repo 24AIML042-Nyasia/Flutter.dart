@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import '../routes/app_routes.dart';
+import '../services/prefs_service.dart';
 import '../theme.dart';
-import 'login_screen.dart';
 
 /// StatefulWidget: needs to run a timer after the widget is built and
 /// then trigger navigation, which is a side-effect / lifecycle concern
@@ -16,11 +17,12 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Simulate a brief loading period, then move to the Login screen.
+    // After a brief loading period, check the saved session:
+    // logged in -> Dashboard, otherwise -> Login.
     Future.delayed(const Duration(seconds: 2), () {
       if (!mounted) return;
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
+      Navigator.of(context).pushReplacementNamed(
+        PrefsService.isLoggedIn ? AppRoutes.home : AppRoutes.login,
       );
     });
   }

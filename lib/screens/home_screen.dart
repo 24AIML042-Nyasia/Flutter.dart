@@ -1,195 +1,78 @@
 import 'package:flutter/material.dart';
-import '../models/student.dart';
+import '../state/app_language.dart';
 import '../theme.dart';
-import '../widgets/dashboard_card.dart';
-import '../widgets/profile_card.dart';
-import 'assignment_list_screen.dart';
+import '../widgets/app_drawer.dart';
+import '../widgets/notification_bell.dart';
 import 'attendance_screen.dart';
-import 'event_gallery_screen.dart';
-import 'faculty_screen.dart';
-import 'notifications_screen.dart';
+import 'dashboard_tab.dart';
 import 'profile_screen.dart';
-import 'settings_screen.dart';
 import 'timetable_screen.dart';
 
-/// StatelessWidget: the dashboard just lays out data it's given —
-/// no internal mutable state of its own.
-class HomeScreen extends StatelessWidget {
+/// Main screen after login (route '/home'). Combines:
+///  - a Drawer (side menu) for every module,
+///  - a BottomNavigationBar for the four main tabs,
+///  - an IndexedStack that keeps each tab alive while you switch.
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Sample data for this practical (dataset given in the brief)
-    final student = Student(
-      name: 'Rahul Patel',
-      email: 'rahul.patel@university.edu',
-      enrollmentNo: '24CE001',
-      department: 'Computer Engineering',
-      semester: 5,
-      cgpa: 8.2,
-      attendancePercentage: 91,
-      subjects: ['MAD', 'DBMS', 'AI', 'CN'],
-      notifications: const [
-        'Internal exam schedule released',
-        'Assignment deadline approaching',
-        'Technical event registration open',
-      ],
-    );
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Course Dashboard'),
-        actions: [
-          _NotificationBellButton(notifications: student.notifications),
-          const SizedBox(width: 8),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ProfileCard(
-              student: student,
-              compact: true,
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => ProfileScreen(student: student)),
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Modules',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 12),
-            // LayoutBuilder makes the dashboard grid responsive: more
-            // columns appear automatically on wider screens (tablets).
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final width = constraints.maxWidth;
-                final crossAxisCount = width < 500
-                    ? 2
-                    : width < 900
-                        ? 3
-                        : 4;
-
-                final cards = [
-                  DashboardCard(
-                    title: 'Attendance',
-                    subtitle: student.attendanceStatus(),
-                    icon: Icons.event_available_rounded,
-                    color: AppColors.mintGreen,
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const AttendanceScreen()),
-                    ),
-                  ),
-                  DashboardCard(
-                    title: 'Timetable',
-                    subtitle: student.subjectList(),
-                    icon: Icons.calendar_month_rounded,
-                    color: AppColors.babyBlue,
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const TimetableScreen()),
-                    ),
-                  ),
-                  DashboardCard(
-                    title: 'Assignments',
-                    subtitle: '3 to track',
-                    icon: Icons.assignment_rounded,
-                    color: AppColors.blushPink,
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const AssignmentListScreen()),
-                    ),
-                  ),
-                  DashboardCard(
-                    title: 'Faculty',
-                    subtitle: 'Meet your teachers',
-                    icon: Icons.school_rounded,
-                    color: AppColors.lavender,
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const FacultyScreen()),
-                    ),
-                  ),
-                  DashboardCard(
-                    title: 'Event Gallery',
-                    subtitle: '6 upcoming events',
-                    icon: Icons.celebration_rounded,
-                    color: AppColors.peach,
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const EventGalleryScreen()),
-                    ),
-                  ),
-                  DashboardCard(
-                    title: 'Settings',
-                    subtitle: 'Preferences',
-                    icon: Icons.settings_rounded,
-                    color: AppColors.softYellow,
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const SettingsScreen()),
-                    ),
-                  ),
-                ];
-
-                return GridView.count(
-                  crossAxisCount: crossAxisCount,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisSpacing: 14,
-                  mainAxisSpacing: 14,
-                  childAspectRatio: 1.15,
-                  children: cards,
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-/// Bell icon with a small badge showing how many notifications are unread.
-/// Lives in the top app bar, opens a notifications-only screen.
-class _NotificationBellButton extends StatelessWidget {
-  final List<String> notifications;
-  const _NotificationBellButton({required this.notifications});
+class _HomeScreenState extends State<HomeScreen> {
+  int _index = 0; // currently selected tab (ephemeral state)
+
+  static const List<String> _titleKeys = [
+    'dashboardTitle',
+    'attendance',
+    'timetable',
+    'studentProfile',
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        IconButton(
-          icon: const Icon(Icons.notifications_rounded),
-          onPressed: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => NotificationsScreen(notifications: notifications),
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(tr(context, _titleKeys[_index])),
+        actions: const [NotificationBell(), SizedBox(width: 8)],
+      ),
+      drawer: AppDrawer(
+        currentTab: _index,
+        onSelectTab: (i) => setState(() => _index = i),
+      ),
+      body: IndexedStack(
+        index: _index,
+        children: const [
+          DashboardTab(),
+          AttendanceScreen(embedded: true),
+          TimetableScreen(embedded: true),
+          ProfileScreen(embedded: true),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _index,
+        onTap: (i) => setState(() => _index = i),
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: AppColors.primary,
+        items: [
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.dashboard_rounded),
+            label: tr(context, 'dashboard'),
           ),
-        ),
-        if (notifications.isNotEmpty)
-          Positioned(
-            right: 6,
-            top: 6,
-            child: Container(
-              padding: const EdgeInsets.all(3),
-              decoration: const BoxDecoration(
-                color: Colors.redAccent,
-                shape: BoxShape.circle,
-              ),
-              constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
-              child: Text(
-                '${notifications.length}',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.event_available_rounded),
+            label: tr(context, 'attendance'),
           ),
-      ],
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.calendar_month_rounded),
+            label: tr(context, 'timetable'),
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.person_rounded),
+            label: tr(context, 'profile'),
+          ),
+        ],
+      ),
     );
   }
 }

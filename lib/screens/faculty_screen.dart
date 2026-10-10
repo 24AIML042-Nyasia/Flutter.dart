@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../state/app_language.dart';
 import '../theme.dart';
 
 class FacultyMember {
@@ -25,7 +26,7 @@ class FacultyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Faculty Information')),
+      appBar: AppBar(title: Text(tr(context, 'faculty'))),
       body: ListView.separated(
         padding: const EdgeInsets.all(16),
         itemCount: _faculty.length,

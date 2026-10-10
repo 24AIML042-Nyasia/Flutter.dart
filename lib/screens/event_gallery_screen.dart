@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../state/app_language.dart';
 import '../theme.dart';
 
 class EventItem {
@@ -28,7 +29,7 @@ class EventGalleryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Event Gallery')),
+      appBar: AppBar(title: Text(tr(context, 'events'))),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: LayoutBuilder(

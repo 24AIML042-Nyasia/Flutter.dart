@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../state/app_language.dart';
 import '../theme.dart';
 
 enum AssignmentStatus { pending, dueSoon, submitted }
@@ -26,7 +27,7 @@ class AssignmentListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Assignments')),
+      appBar: AppBar(title: Text(tr(context, 'assignments'))),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [for (final a in _assignments) _AssignmentTile(assignment: a)],

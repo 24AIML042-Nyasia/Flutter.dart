@@ -43,7 +43,8 @@ class CustomTextField extends StatelessWidget {
         prefixIcon: Icon(icon, color: AppColors.primary),
         filled: true,
         fillColor: isDark ? AppColors.darkSurface : Colors.white,
-        contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide.none,
