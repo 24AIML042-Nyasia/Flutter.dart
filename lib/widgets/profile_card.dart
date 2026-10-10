@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/student.dart';
+import '../state/app_language.dart';
 import '../theme.dart';
 
 /// Reusable card that shows a student's key details.
@@ -19,6 +20,10 @@ class ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryText = isDark ? AppColors.darkText : AppColors.textDark;
+    final mutedText = isDark ? AppColors.darkTextMuted : AppColors.textMuted;
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(24),
@@ -26,7 +31,7 @@ class ProfileCard extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: AppColors.lavender,
+          color: isDark ? AppColors.darkSurface : AppColors.lavender,
           borderRadius: BorderRadius.circular(24),
         ),
         child: Column(
@@ -46,34 +51,35 @@ class ProfileCard extends StatelessWidget {
                     children: [
                       Text(
                         student.describe(),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
+                          color: primaryText,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         '${student.enrollmentNo} • CGPA ${student.cgpa}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
-                          color: AppColors.textMuted,
+                          color: mutedText,
                         ),
                       ),
                     ],
                   ),
                 ),
-                if (compact) const Icon(Icons.chevron_right, color: AppColors.textMuted),
+                if (compact) Icon(Icons.chevron_right, color: mutedText),
               ],
             ),
             if (!compact) ...[
               const SizedBox(height: 16),
               const Divider(color: Colors.white),
               const SizedBox(height: 8),
-              _detailRow('Email', student.email),
-              _detailRow('Semester', student.semester.toString()),
-              _detailRow('Attendance',
-                  '${student.attendancePercentage.toStringAsFixed(0)}% (${student.attendanceStatus()})'),
-              _detailRow('Subjects', student.subjectList()),
+              _detailRow(context, tr(context, 'email'), student.email, primaryText, mutedText),
+              _detailRow(context, tr(context, 'semester'), student.semester.toString(), primaryText, mutedText),
+              _detailRow(context, tr(context, 'attendance'),
+                  '${student.attendancePercentage.toStringAsFixed(0)}% (${student.attendanceStatus()})', primaryText, mutedText),
+              _detailRow(context, tr(context, 'subjects'), student.subjectList(), primaryText, mutedText),
             ],
           ],
         ),
@@ -81,7 +87,7 @@ class ProfileCard extends StatelessWidget {
     );
   }
 
-  Widget _detailRow(String label, String value) {
+  Widget _detailRow(BuildContext context, String label, String value, Color primaryText, Color mutedText) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -91,17 +97,17 @@ class ProfileCard extends StatelessWidget {
             width: 90,
             child: Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textMuted,
+                color: mutedText,
               ),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(fontSize: 13, color: AppColors.textDark),
+              style: TextStyle(fontSize: 13, color: primaryText),
             ),
           ),
         ],

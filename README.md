@@ -1,75 +1,38 @@
 # Smart Student Companion App
 
-A Flutter app for the Smart Student Companion project — pastel UI covering
-splash, login, registration, a responsive dashboard, attendance, timetable,
-assignments, faculty info, an event gallery, notifications, and settings.
+A Flutter app built as part of the Mobile Application Development practicals.
 
-## What's inside
+## Overview
 
-- `lib/theme.dart` — pastel color palette, light + dark `ThemeData`, and the
-  global `themeModeNotifier` that switches the app's theme
-- `lib/models/student.dart` — `Person` base class and `Student` subclass
-  demonstrating constructors, encapsulation, and inheritance
-- `lib/screens/splash_screen.dart` — **StatefulWidget**; shows a loading
-  state for 2 seconds, then navigates to Login
-- `lib/screens/login_screen.dart` — **StatefulWidget**; `Form` +
-  `TextFormField` validation, links to Registration
-- `lib/screens/registration_screen.dart` — **StatefulWidget**; multi-field
-  form with name/enrollment/department/email/password validation
-- `lib/screens/home_screen.dart` — **StatelessWidget**; the Course Dashboard.
-  Uses `LayoutBuilder` + `GridView` so the module grid adds columns
-  automatically on wider screens, plus a notification bell + unread badge
-  in the app bar
-- `lib/screens/attendance_screen.dart` — **StatelessWidget**; overall
-  attendance ring built with `Stack`, per-subject bars built with
-  `Row` + `Expanded`
-- `lib/screens/timetable_screen.dart` — **StatelessWidget**; weekly schedule
-  using `ListView` of day cards, each a `Column` of `Row`-based time slots
-- `lib/screens/assignment_list_screen.dart` — **StatelessWidget**;
-  `ListView` of assignment tiles (`Row` + `Column` + `Expanded`)
-- `lib/screens/faculty_screen.dart` — **StatelessWidget**; `ListView` of
-  faculty info tiles
-- `lib/screens/event_gallery_screen.dart` — **StatelessWidget**; responsive
-  `GridView` (via `LayoutBuilder`) of at least six event cards, each built
-  with a `Stack`
-- `lib/screens/notifications_screen.dart` — **StatelessWidget**; notifications
-  only, no student info
-- `lib/screens/profile_screen.dart` — **StatelessWidget**; student profile
-  details only
-- `lib/screens/settings_screen.dart` — **StatefulWidget**; toggle switches,
-  including a working Dark mode switch
-- `lib/widgets/dashboard_card.dart` — reusable pastel dashboard card
-- `lib/widgets/profile_card.dart` — reusable profile card (compact on the
-  dashboard, full detail on the Profile screen)
-- `lib/widgets/notification_tile.dart` — reusable notification row
-- `lib/widgets/custom_text_field.dart` — reusable styled `TextFormField`
-- `lib/widgets/custom_button.dart` — reusable pastel button
+A pastel-themed student utility app with light and dark mode support. It covers a splash screen, login, registration, a responsive dashboard, and screens for attendance, timetable, assignments, faculty info, event gallery, notifications, profile, and settings.
 
-App flow: `SplashScreen` → `LoginScreen` → (`RegistrationScreen` optional) →
-`HomeScreen` (Course Dashboard) → Attendance / Timetable / Assignments /
-Faculty / Event Gallery / Notifications / Settings.
+## Screens
 
-## Responsive layout notes
+- **Splash** — loading screen that navigates to Login
+- **Login / Registration** — form validation with enrollment number and email
+- **Dashboard** — responsive grid of module cards, adapts columns to screen width
+- **Attendance** — overall ring + per-subject progress bars
+- **Timetable** — weekly schedule by day
+- **Assignments** — list of assignments with status and due dates
+- **Faculty** — faculty info tiles
+- **Event Gallery** — responsive grid of event cards
+- **Notifications** — notification feed
+- **Profile** — student details
+- **Settings** — profile editing, dark/light theme toggle, language selection, notification and course preferences, dashboard customization
 
-Both the dashboard grid (`home_screen.dart`) and the Event Gallery
-(`event_gallery_screen.dart`) use `LayoutBuilder` to read the available
-width and pick a column count — 2 columns on a typical phone, more on a
-wider screen or tablet — so the UI adapts automatically instead of using a
-fixed layout.
+## Key widgets
+
+- `CustomTextField` — styled form field used across login, registration, and settings
+- `ProfileCard` — compact on dashboard, full detail on profile screen
+- `DashboardCard` — reusable pastel module card
+- `CustomButton` — reusable pastel button
 
 ## Running it
 
-This repo contains only the `lib/`, `test/`, `pubspec.yaml` and config files
-(no generated `android/`/`ios/` folders, since those are machine-specific and
-get created automatically). To run it:
-
 ```bash
-flutter create . --project-name smart_student_companion   # generates android/ios/etc. in place
+flutter create . --project-name smart_student_companion
 flutter pub get
-flutter doctor                                             # verify your setup
-flutter run                                                 # run on emulator/device
+flutter run
 ```
 
-> Running `flutter create .` inside this folder will not overwrite the
-> existing `lib/`, `pubspec.yaml`, or `test/` files — it only fills in the
-> missing platform folders.
+> `flutter create .` only generates the missing platform folders and will not overwrite existing `lib/` or `pubspec.yaml` files.
