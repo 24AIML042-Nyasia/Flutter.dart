@@ -1,30 +1,34 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smart_student_companion/main.dart';
+import 'package:smart_student_companion/services/prefs_service.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('Logged-out user is sent from Splash to Login',
+      (WidgetTester tester) async {
+    SharedPreferences.setMockInitialValues({});
+    await PrefsService.init();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    await tester.pumpWidget(const SmartStudentCompanionApp());
+    expect(find.text('Smart Student Companion'), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pumpAndSettle();
+    expect(find.text('Welcome back'), findsOneWidget);
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('Saved session goes straight to the Dashboard',
+      (WidgetTester tester) async {
+    SharedPreferences.setMockInitialValues({
+      'logged_in': true,
+      'username': PrefsService.demoUsername,
+    });
+    await PrefsService.init();
+
+    await tester.pumpWidget(const SmartStudentCompanionApp());
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pumpAndSettle();
+    expect(find.text('Course Dashboard'), findsOneWidget);
   });
 }

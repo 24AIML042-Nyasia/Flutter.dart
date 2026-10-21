@@ -99,4 +99,15 @@ const Map<String, List<String>> _strings = {
   'profile': ['Profile', 'प्रोफ़ाइल', 'પ્રોફાઇલ'],
   'enableNotifications': ['Enable notifications', 'सूचनाएं चालू करें', 'સૂચનાઓ ચાલુ કરો'],
   'notificationsOff': ['Notifications are turned off.', 'सूचनाएं बंद हैं।', 'સૂચનાઓ બંધ છે.'],
+
+  // Notes and tasks
+  'notes': ['Notes', 'नोट्स', 'નોંધો'],
+  'tasks': ['Tasks', 'कार्य', 'કાર્યો'],
+  'notesSubtitle': ['Study notes', 'अध्ययन नोट्स', 'અભ્યાસ નોંધો'],
+  'tasksSubtitle': ['To-do list', 'करने योग्य कार्य', 'કરવાના કાર્યો'],
+
+  // Notices (REST API)
+  'notices': ['Notices', 'नोटिस', 'નોટિસ'],
+  'noticesSubtitle': ['Live from the web', 'वेब से लाइव', 'વેબ પરથી લાઇવ'],
+  'feedback': ['Feedback', 'प्रतिक्रिया', 'પ્રતિસાદ'],
 };

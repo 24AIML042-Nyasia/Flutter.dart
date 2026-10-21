@@ -1,5 +1,6 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show TargetPlatform, defaultTargetPlatform, kIsWeb;
 import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import '../models/note.dart';
 import '../models/task.dart';
@@ -28,17 +29,31 @@ class DatabaseHelper {
 
   /// Opens the database the first time it is needed, then reuses it.
   Future<Database> get database async {
-    if (kIsWeb) {
+    // sqflite runs on Android / iOS, and in a browser through the web
+    // factory set up in main.dart. Other targets (e.g. Windows) are not set up.
+    final supported = kIsWeb ||
+        defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS;
+    if (!supported) {
       throw UnsupportedError(
-        'SQLite (sqflite) does not run in a web browser. '
+        'SQLite is set up for Android, iOS and Chrome/Edge. '
         'Run the app on an Android emulator or device.',
       );
     }
     return _db ??= await _open();
   }
 
+  /// Uses Path Provider to find the app's private documents folder and
+  /// stores the database file there. (A browser has no folders; the web
+  /// factory keeps the database in the browser's own storage.)
+  Future<String> _databasePath() async {
+    if (kIsWeb) return _dbName;
+    final dir = await getApplicationDocumentsDirectory();
+    return p.join(dir.path, _dbName);
+  }
+
   Future<Database> _open() async {
-    final path = p.join(await getDatabasesPath(), _dbName);
+    final path = await _databasePath();
     return openDatabase(path, version: _dbVersion, onCreate: _onCreate);
   }
 

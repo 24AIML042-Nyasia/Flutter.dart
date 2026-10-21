@@ -3,13 +3,19 @@ import '../screens/assignment_list_screen.dart';
 import '../screens/attendance_screen.dart';
 import '../screens/event_gallery_screen.dart';
 import '../screens/faculty_screen.dart';
+import '../screens/feedback_screen.dart';
 import '../screens/home_screen.dart';
 import '../screens/login_screen.dart';
+import '../screens/note_form_screen.dart';
+import '../screens/notes_screen.dart';
+import '../screens/notices_screen.dart';
 import '../screens/notifications_screen.dart';
 import '../screens/profile_screen.dart';
 import '../screens/registration_screen.dart';
 import '../screens/settings_screen.dart';
 import '../screens/splash_screen.dart';
+import '../screens/task_form_screen.dart';
+import '../screens/tasks_screen.dart';
 import '../screens/timetable_screen.dart';
 import 'app_routes.dart';
 
@@ -27,13 +33,19 @@ final Map<String, WidgetBuilder> _routes = {
   AppRoutes.faculty: (_) => const FacultyScreen(),
   AppRoutes.settings: (_) => const SettingsScreen(),
   AppRoutes.notifications: (_) => const NotificationsScreen(),
+  AppRoutes.notes: (_) => const NotesScreen(),
+  AppRoutes.tasks: (_) => const TasksScreen(),
+  AppRoutes.noteForm: (_) => const NoteFormScreen(),
+  AppRoutes.taskForm: (_) => const TaskFormScreen(),
+  AppRoutes.notices: (_) => const NoticesScreen(),
+  AppRoutes.feedback: (_) => const FeedbackScreen(),
 };
 
 /// Called by MaterialApp (onGenerateRoute) for every named navigation.
 /// Builds the page with an animated slide + fade transition.
 Route<dynamic> generateRoute(RouteSettings settings) {
   final builder = _routes[settings.name] ?? _routes[AppRoutes.login]!;
-  return PageRouteBuilder<void>(
+  return PageRouteBuilder<dynamic>(
     settings: settings,
     transitionDuration: const Duration(milliseconds: 300),
     pageBuilder: (context, _, __) => builder(context),

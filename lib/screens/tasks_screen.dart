@@ -54,11 +54,7 @@ class _TasksScreenState extends State<TasksScreen> {
         filter: _filter,
       );
 
-  void _reload() {
-    setState(() {
-      _tasksFuture = _load();
-    });
-  }
+  void _reload() => setState(() => _tasksFuture = _load());
 
   Future<void> _openForm([Task? task]) async {
     final result =
@@ -74,16 +70,12 @@ class _TasksScreenState extends State<TasksScreen> {
       await DatabaseHelper.instance.updateTask(
         task.copyWith(status: done ? Task.completed : Task.pending),
       );
+      if (!mounted) return;
+      _reload();
+      showAppSnack(context, done ? 'Task marked completed' : 'Task marked pending');
     } catch (_) {
-      if (mounted) {
-        showAppSnack(context, 'Could not update the task', error: true);
-      }
-      return;
+      if (mounted) showAppSnack(context, 'Could not update the task', error: true);
     }
-
-    if (!mounted) return;
-    _reload();
-    showAppSnack(context, done ? 'Task marked completed' : 'Task marked pending');
   }
 
   Future<void> _delete(Task task) async {
@@ -93,19 +85,14 @@ class _TasksScreenState extends State<TasksScreen> {
       message: '"${task.name}" will be removed permanently.',
     );
     if (!ok || !mounted) return;
-
     try {
       await DatabaseHelper.instance.deleteTask(task.id!);
+      if (!mounted) return;
+      _reload();
+      showAppSnack(context, 'Task deleted');
     } catch (_) {
-      if (mounted) {
-        showAppSnack(context, 'Could not delete the task', error: true);
-      }
-      return;
+      if (mounted) showAppSnack(context, 'Could not delete the task', error: true);
     }
-
-    if (!mounted) return;
-    _reload();
-    showAppSnack(context, 'Task deleted');
   }
 
   @override

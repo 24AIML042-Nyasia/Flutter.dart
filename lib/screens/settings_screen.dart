@@ -398,7 +398,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
   /// Switches: show or hide each dashboard module. Settings itself can't
   /// be hidden, so it always stays reachable.
   Widget _moduleSwitches() {
-    const ids = ['attendance', 'timetable', 'assignments', 'faculty', 'events'];
+    const ids = [
+      'attendance',
+      'timetable',
+      'assignments',
+      'notes',
+      'tasks',
+      'notices',
+      'faculty',
+      'events',
+    ];
     return ValueListenableBuilder<Set<String>>(
       valueListenable: hiddenModulesNotifier,
       builder: (context, hidden, _) {

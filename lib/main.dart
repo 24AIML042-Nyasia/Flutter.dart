@@ -1,4 +1,7 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart' show databaseFactory;
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'routes/app_router.dart';
 import 'routes/app_routes.dart';
 import 'services/prefs_service.dart';
@@ -7,6 +10,10 @@ import 'theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // In a browser, SQLite runs through the web database factory.
+  if (kIsWeb) {
+    databaseFactory = databaseFactoryFfiWeb;
+  }
   // Load saved login/theme/language/etc. before the first screen is drawn.
   await PrefsService.init();
   runApp(const SmartStudentCompanionApp());

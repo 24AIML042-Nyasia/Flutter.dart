@@ -77,6 +77,27 @@ class DashboardTab extends StatelessWidget {
                       color: AppColors.blushPink,
                       onTap: () => open(AppRoutes.assignments),
                     ),
+                    'notes': DashboardCard(
+                      title: tr(context, 'notes'),
+                      subtitle: tr(context, 'notesSubtitle'),
+                      icon: Icons.sticky_note_2_rounded,
+                      color: AppColors.babyBlue,
+                      onTap: () => open(AppRoutes.notes),
+                    ),
+                    'tasks': DashboardCard(
+                      title: tr(context, 'tasks'),
+                      subtitle: tr(context, 'tasksSubtitle'),
+                      icon: Icons.task_alt_rounded,
+                      color: AppColors.peach,
+                      onTap: () => open(AppRoutes.tasks),
+                    ),
+                    'notices': DashboardCard(
+                      title: tr(context, 'notices'),
+                      subtitle: tr(context, 'noticesSubtitle'),
+                      icon: Icons.campaign_rounded,
+                      color: AppColors.mintGreen,
+                      onTap: () => open(AppRoutes.notices),
+                    ),
                     'faculty': DashboardCard(
                       title: tr(context, 'faculty'),
                       subtitle: tr(context, 'meetTeachers'),

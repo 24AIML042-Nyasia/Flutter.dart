@@ -15,4 +15,10 @@ class AppRoutes {
   static const faculty = '/faculty';
   static const settings = '/settings';
   static const notifications = '/notifications';
+  static const notes = '/notes';
+  static const tasks = '/tasks';
+  static const noteForm = '/note-form'; // arguments: Note? (null = add)
+  static const taskForm = '/task-form'; // arguments: Task? (null = add)
+  static const notices = '/notices';
+  static const feedback = '/feedback';
 }

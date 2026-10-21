@@ -49,11 +49,7 @@ class _NotesScreenState extends State<NotesScreen> {
       .getNotes(search: _searchController.text, sort: _sort);
 
   /// Starts a new query; FutureBuilder rebuilds with the fresh result.
-  void _reload() {
-    setState(() {
-      _notesFuture = _load();
-    });
-  }
+  void _reload() => setState(() => _notesFuture = _load());
 
   Future<void> _openForm([Note? note]) async {
     final result =
@@ -71,19 +67,14 @@ class _NotesScreenState extends State<NotesScreen> {
       message: '"${note.title}" will be removed permanently.',
     );
     if (!ok || !mounted) return;
-
     try {
       await DatabaseHelper.instance.deleteNote(note.id!);
+      if (!mounted) return;
+      _reload();
+      showAppSnack(context, 'Note deleted');
     } catch (_) {
-      if (mounted) {
-        showAppSnack(context, 'Could not delete the note', error: true);
-      }
-      return;
+      if (mounted) showAppSnack(context, 'Could not delete the note', error: true);
     }
-
-    if (!mounted) return;
-    _reload();
-    showAppSnack(context, 'Note deleted');
   }
 
   @override
